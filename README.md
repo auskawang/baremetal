@@ -4,3 +4,5 @@ This is a side project where I attempt to blink an LED, and hopefully do other t
 
 11/10: the map file shows the addresses that the CPU will when accessing globals. therefore in startup code its important to copy from flash to the addresses that the map file has
 additionally, these addresses are mapped to sram regions, meaning that before the startup code that copies over data from flash to sram, this sram region has trash data. this means that using a global variable in assisting with copying over data does not work, so you must use linker variables or use const globals since the map file links addresses in flash to these variables rather than in sram
+
+11/18: value of the location counter (.) relies on the location of the memory section, whether it starts at >FLASH or >SRAM. If copying over data from FLASH (>SRAM AT>FLASH), then we can access the location of where to start copying from using LOADADDR(section_name)
