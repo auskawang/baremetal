@@ -4,7 +4,9 @@ extern int _sdata;
 extern int _edata;
 extern int _sbss;
 extern int _ebss;
-int* SRAM_START = (int*)0x20000000;
+extern int _ld_data;
+const int* FLASH_START = (int*)0x08000000;
+
 void Reset_Handler();
 void HardFault_Handler();
 int main();
@@ -16,14 +18,21 @@ uint32_t vectors[] __attribute__((section(".vec_table")))= {
 };
 
 void Reset_Handler() {
+	int* src = &_ld_data;
+	int* dst_data = &_sdata;
+	int* end_data = &_edata;
+
+	int* dst_bss = &_sbss;
+	int* end_bss = &_ebss;
+
 	//copy data from FLASH to SRAM
-	for (int i = _sdata; i < _edata; i++) {
-		*(SRAM_START++) = (*&_sdata)++;
+	for (int* i = dst_data; i < end_data; i++) {
+		*(i) = *(src++);
 	}
 
 	//copy from FLASH TO SRAM for bss
-	for (int i = _sbss; i < _ebss; i++) {
-		*(SRAM_START)++ = 0;
+	for (int *i = dst_bss; i < end_bss; i++) {
+		*(i) = 0;
 	}
 
 	//call main

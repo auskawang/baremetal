@@ -1,6 +1,6 @@
 //attempt at a simple blinky baremetal
 
-int x = 4 + 3;
+int x = 0xDEADBEEF;
 int s;
 int main() {
 	int y = 2;

@@ -25,11 +25,12 @@ SECTIONS
 		*(.data)
 		_edata = .;
 	} >SRAM AT>FLASH
+	_ld_data = LOADADDR(.data);
 	.bss :
 	{
 		_sbss = .;
 		*(.bss)
 		_ebss = .;
 		
-	} >SRAM AT>FLASH
+	} >SRAM
 }
