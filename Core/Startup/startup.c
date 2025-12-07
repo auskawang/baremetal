@@ -5,7 +5,6 @@ extern int _edata;
 extern int _sbss;
 extern int _ebss;
 extern int _ld_data;
-const int* FLASH_START = (int*)0x08000000;
 
 void Reset_Handler();
 void HardFault_Handler();
