@@ -8,12 +8,33 @@ extern int _ld_data;
 
 void Reset_Handler();
 void HardFault_Handler();
+void EXTI415_Callback();
 int main();
 uint32_t vectors[] __attribute__((section(".vec_table")))= {
 	0x20002FFF,
 	(uint32_t)Reset_Handler,
 	0,
 	(uint32_t)HardFault_Handler,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0, //SV call handler
+	0,
+	0,
+	0, //PendSV
+	0, //SysTick
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	(uint32_t)EXTI415_Callback,
 };
 
 void Reset_Handler() {
@@ -41,3 +62,5 @@ void Reset_Handler() {
 void HardFault_Handler() {
 	while(1) {};
 }
+
+
