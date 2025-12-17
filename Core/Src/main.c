@@ -1,6 +1,7 @@
 //attempt at a simple blinky baremetal
 #include <stdint.h>
 #define RCC 0x40021000
+#define RCC_CR (RCC)
 #define RCC_IOPENR (RCC + 0x34)
 #define GPIOA 0x50000000
 #define GPIOA_MODER (GPIOA + 0x00)
@@ -21,10 +22,15 @@
 
 #define MPU_CTRL 0xE000ED94
 
+#define STK_CSR 0xE000E010
+#define STK_RVR 0xE000E014
+#define STK_CVR 0xE000E018
+
 #define LED_PIN 5
 #define BUTTON_PIN 13
 
 extern void EXTI415_Callback();
+extern void delay();
 
 uint8_t button_state = 0;
 int main() {
@@ -52,12 +58,16 @@ int main() {
 			*((volatile uint32_t*)NVIC_ISER) |= (uint32_t)0x80;	//hard faults when accessing bits after bit 6
 			__asm volatile("":::"memory");
 
+	//sysclk stuff based off hsi 48mhz (each interrupt should fire every 1ms)
+	*((int*)STK_RVR) = 0x5DB; //reload of 47999 -> 5999 -> 1499
+	*((int*)STK_CVR) = 1;	//reset current value
+	*((int*)STK_CSR) |= 0x3;
 
 	while(1) {
-		if (button_state)
 			*((int*)GPIOA_ODR) |= 0x1 << LED_PIN;
-		else
+		delay(1000);
 			*((int*)GPIOA_BRR) |= 0x1 << LED_PIN;
+			delay(1000);
 	}
 
 	return 1;

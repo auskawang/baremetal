@@ -9,7 +9,12 @@ extern int _ld_data;
 void Reset_Handler();
 void HardFault_Handler();
 void EXTI415_Callback();
+void SysTick_Handler();
+void delay();
 int main();
+
+int volatile counter = 0;
+
 uint32_t vectors[] __attribute__((section(".vec_table")))= {
 	0x20002FFF,
 	(uint32_t)Reset_Handler,
@@ -26,7 +31,7 @@ uint32_t vectors[] __attribute__((section(".vec_table")))= {
 	0,
 	0,
 	0, //PendSV
-	0, //SysTick
+	(uint32_t)SysTick_Handler, //SysTick
 	0,
 	0,
 	0,
@@ -61,6 +66,17 @@ void Reset_Handler() {
 
 void HardFault_Handler() {
 	while(1) {};
+}
+
+void SysTick_Handler() {
+	counter++;
+}
+
+void delay(int milliseconds) {
+	counter = 0;
+	while (counter < milliseconds) {
+		__asm volatile ("nop");
+	}
 }
 
 
