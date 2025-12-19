@@ -10,6 +10,7 @@ void Reset_Handler();
 void HardFault_Handler();
 void EXTI415_Callback();
 void SysTick_Handler();
+void TIM14_Callback();
 void delay();
 int main();
 
@@ -40,6 +41,18 @@ uint32_t vectors[] __attribute__((section(".vec_table")))= {
 	0,
 	0,
 	(uint32_t)EXTI415_Callback,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	(uint32_t)TIM14_Callback
 };
 
 void Reset_Handler() {
@@ -78,5 +91,7 @@ void delay(int milliseconds) {
 		__asm volatile ("nop");
 	}
 }
+
+
 
 
