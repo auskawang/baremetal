@@ -3,11 +3,32 @@
 #define RCC 0x40021000
 #define RCC_CR (RCC)
 #define RCC_IOPENR (RCC + 0x34)
+<<<<<<< HEAD
 #define RCC_APBENR2 (RCC + 0x40)
+=======
+#define RCC_APBENR1 (RCC + 0x3C)
+#define RCC_APBENR2 (RCC + 0x40)
+#define RCC_CCIPR (RCC + 0x54)
+
+#define RCC_APBENR1_USART2EN_Pos    (17U)
+#define RCC_APBENR1_USART2EN_Msk    (1U << RCC_APBENR1_USART2EN_Pos)
+#define RCC_APBENR1_USART2EN        RCC_APBENR1_USART2EN_Msk
+
+>>>>>>> 0e649f8 (printed to putty)
 #define GPIOA 0x50000000
 #define GPIOA_MODER (GPIOA + 0x00)
 #define GPIOA_ODR (GPIOA + 0x14)
 #define GPIOA_BRR (GPIOA + 0x28)
+<<<<<<< HEAD
+=======
+#define GPIOA_AFRL (GPIOA + 0x20)
+
+#define GPIOB 0x50000400
+#define GPIOB_MODER (GPIOB + 0x00)
+#define GPIOB_ODR (GPIOB + 0x14)
+#define GPIOB_BRR (GPIOB + 0x28)
+#define GPIOB_AFRL (GPIOB + 0x20)
+>>>>>>> 0e649f8 (printed to putty)
 
 #define GPIOC 0x50000800
 #define GPIOC_MODER (GPIOC + 0x00)
@@ -35,6 +56,26 @@
 #define TIM14_PSC (TIM14 + 0x28)
 #define TIM14_ARR (TIM14 + 0x2C)
 
+<<<<<<< HEAD
+=======
+#define USART1 0x40013800
+#define USART1_CR1 (USART1 + 0x0)
+#define USART1_BRR (USART1 + 0xC)
+#define USART1_ISR (USART1 + 0x1C)
+#define USART1_ISR_TXE_POS 7
+#define USART1_ISR_TXE_Msk (1U << 7)
+#define USART1_TDR (USART1 + 0x28)
+
+#define USART2 0x40004400
+#define USART2_CR1 (USART2 + 0x0)
+#define USART2_BRR (USART2 + 0xC)
+#define USART2_ISR (USART2 + 0x1C)
+#define USART2_ISR_TXE_POS 7
+#define USART2_ISR_TXE_Msk (1U << 7)
+#define USART2_TDR (USART2 + 0x28)
+
+
+>>>>>>> 0e649f8 (printed to putty)
 #define SHPR3 0xE000ED20
 #define NVIC_IPR4 0xE000E410
 
@@ -53,10 +94,14 @@ const uint8_t sine_lut[200] = {
 };
 
 int main() {
+<<<<<<< HEAD
 
 
 
 	*((int*)RCC_IOPENR) = 0x1;
+=======
+	*((int*)RCC_IOPENR) = 0x3;
+>>>>>>> 0e649f8 (printed to putty)
 
 	*((int*)GPIOA_MODER) &= ~(0x3 << (2 * LED_PIN));
 	*((int*)GPIOA_MODER) |= 0x1 << (2 * LED_PIN);
@@ -84,6 +129,7 @@ int main() {
 
 
 	//set tim14 priority to 1
+<<<<<<< HEAD
 	*((int*)NVIC_IPR4) |= 0x40000000;
 	//tim14 clock based off of 48mhz/4
 	*((int*)RCC_APBENR2) |= 0x8000; //enable tim14
@@ -100,6 +146,57 @@ int main() {
 		delay(8);
 		}
 
+=======
+	//*((int*)NVIC_IPR4) |= 0x40000000;
+	//tim14 clock based off of 48mhz/4
+//	*((int*)RCC_APBENR2) |= 0x8000; //enable tim14
+//	*((int*)TIM14_DIER) |= 0x1;	//enable interrupt generation
+//	*((int*)NVIC_ISER) |= 0x80000; //enable interrupt for NVIC
+//	*((int*)TIM14_PSC) = 0x0; //PS of 1
+//	*((int*)TIM14_ARR) = 0x258;
+//	*((int*)TIM14_CR1) |= 0x1; //start the counter
+
+	//USART1 implementation
+//	*((int*)RCC_CCIPR) |= 0x2; 			//choose HSI48 as clock into usart1
+//	*((int*)RCC_APBENR2) |= 0x4000; 	//enable apb clock for usart1
+//										//program M bits in usart_cr1 (reset value)
+//	*((int*)USART1_BRR) = 0x4E2; 		//9600 set baud rate (12000000 (input clock) / 9600 (desired baud))
+//	*((int*)USART1_CR1) |= 0x1; 		//enable usart
+//	*((int*)USART1_CR1) |= 0x8;			//enable usart transmitter
+//
+//	*((int*)GPIOB_MODER) &= ~(0xF << 12);   // clear PA0, PA1
+//	*((int*)GPIOB_MODER) |=  (0xA << 12);   // AF mode
+//	*((int*)GPIOB_AFRL) &= ~(0xFF << 24);
+//
+//	if (*((int*)USART1_ISR) & USART1_ISR_TXE_Msk) {
+//		*((int*)USART1_TDR) = 0x61;
+//	}
+
+	//USART2 (for vcp)
+	*((int*)RCC_APBENR1) |= RCC_APBENR1_USART2EN; 	//enable apb clock for usart2 (12mhz)
+										//program M bits in usart_cr1 (reset value)
+	*((int*)USART2_BRR) = 0x4E2; 		//9600 set baud rate (12000000 (input clock) / 9600 (desired baud)) p.762
+	*((int*)USART2_CR1) |= 0x1; 		//enable usart
+	*((int*)USART2_CR1) |= 0x8;			//enable usart transmitter
+
+	*((int*)GPIOA_MODER) &= ~(0xF << 4);   // clear pa2, pa3  p187
+	*((int*)GPIOA_MODER) |=  (0xA << 4);   // AF mode pa2, pa3
+	*((int*)GPIOA_AFRL) |= 0x1 << 8;		//afsel2 = 0001 p191
+	*((int*)GPIOA_AFRL) |= 0x1 << 12;    //afsel3 = 0001
+
+	if (*((int*)USART2_ISR) & USART2_ISR_TXE_Msk) {
+		*((int*)USART2_TDR) = 0x61;
+	}
+	while(1) {
+//		for (int i = 0; i < 200; i++) {
+//			set_brightness(sine_lut[i]);
+//		delay(8);
+//		}
+		if (*((int*)USART2_ISR) & USART2_ISR_TXE_Msk) {
+				*((int*)USART2_TDR) = 0x61;
+			}
+		delay(100);
+>>>>>>> 0e649f8 (printed to putty)
 //		if (button_state) *((int*)GPIOA_ODR) |= 0x1 << LED_PIN;
 //		else *((int*)GPIOA_BRR) |= 0x1 << LED_PIN;
 	}
